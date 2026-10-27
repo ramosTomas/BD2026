@@ -1,38 +1,25 @@
-/*EXERCÍCIO 1
-GO
-CREATE DATABASE Datawarehouse
 
-USE Datawarehouse
+CREATE DATABASE Datawarehouse;
 
 GO
 CREATE SCHEMA info;
-*/
 
------------------------------------------------------
-
-/*EXERCÍCIO 2
 GO
 CREATE TABLE info.Clientes (
     ClienteID INT NOT NULL,
     PRIMARY KEY (ClienteID)
 )
-
 GO
 CREATE TABLE info.Pedidos (
-    EncomendaID INT NOT NULL,
-    FOREIGN KEY (EncomendaID) REFERENCES info.Clientes(ClienteID)
+    ClienteID INT NOT NULL,
+    FOREIGN KEY (ClienteID) REFERENCES info.Clientes(ClienteID)
 )
-*/
 
------------------------------------------------------
-
-/*EXERCÍCIO 3
 GO
 CREATE TABLE info.Departamentos (
     DepartamentoID INT NOT NULL,
     PRIMARY KEY (DepartamentoID)
 )
-
 GO
 CREATE TABLE info.Funcionarios (
     FuncionarioID INT NOT NULL,
@@ -40,42 +27,41 @@ CREATE TABLE info.Funcionarios (
     PRIMARY KEY (FuncionarioID),
     FOREIGN KEY (DepartamentoID) REFERENCES info.Departamentos(DepartamentoID)
 )
-*/
 
------------------------------------------------------
-
-/*EXERCÍCIO 4
 GO
 CREATE TABLE info.Cursos (
     CursoID INT NOT NULL,
     PRIMARY KEY (CursoID)
 )
-
 GO
 CREATE TABLE info.Matriculas (
-    AlunoID INT NOT NULL UNIQUE,
+    AlunoID INT NOT NULL,
     CursoID INT NOT NULL,
     FOREIGN KEY (CursoID) REFERENCES info.Cursos(CursoID)
 )
-*/
 
------------------------------------------------------
-
-/*EXERCÍCIO 5*/
-GO 
+GO
 CREATE TABLE info.Fornecedores (
-    FornecedorID INT NOT NULL,
-    PRIMARY KEY (FornecedorID)
+    FornecedoresID INT NOT NULL,
+    PRIMARY KEY (FornecedoresID)
 )
-
 GO
 CREATE TABLE info.Produtos (
     ProdutoID INT NOT NULL,
-    FornecedorID INT NOT NULL,
+    FornecedoresID INT NOT NULL,
     PRIMARY KEY (ProdutoID),
-    FOREIGN KEY (FornecedorID) REFERENCES info.Fornecedores(FornecedorID)
+    FOREIGN KEY (FornecedoresID) REFERENCES info.Fornecedores(FornecedoresID)
 )
 
------------------------------------------------------
-
-/*EXERCÍCIO 6*/
+GO
+CREATE TABLE info.Projetos (
+    ProjetoID INT NOT NULL,
+    PRIMARY KEY (ProjetoID)
+)
+GO
+CREATE TABLE info.Tarefas (
+    TarefaID INT NOT NULL,
+    ProjetoID INT NOT NULL,
+    PRIMARY KEY (TarefaID),
+    FOREIGN KEY (ProjetoID) REFERENCES info.Projetos(ProjetoID)
+)
