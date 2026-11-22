@@ -1,46 +1,51 @@
+-----------------------Exercício 1: Inserir registos com transacções-----------------------
 
-/*EXERCÍCIO 1*/
-SELECT customer_id, first_name, last_name, city, state
-INTO sales.AllCustomers
-FROM sales.customers
+BEGIN TRANSACTION
+    SET IDENTITY_INSERT production.categories ON
+    INSERT INTO production.categories(category_id, category_name) VALUES(8, 'Manchester United Bikes')
+    INSERT INTO production.categories(category_id, category_name) VALUES(9, 'Everton Bikes')
+    SET IDENTITY_INSERT production.categories OFF
+COMMIT TRANSACTION;
 
-SELECT * FROM sales.AllCustomers
+BEGIN TRANSACTION
+    SET IDENTITY_INSERT production.brands ON
+    INSERT INTO production.brands(brand_id, brand_name) VALUES(10, 'Manchester Bikes')
+    INSERT INTO production.brands(brand_id, brand_name) VALUES(11, 'Everton Bikes')
+    SET IDENTITY_INSERT production.brands OFF
+ROLLBACK TRANSACTION;
 
-/*------------------------------------------------------*/
+SELECT * FROM production.brands
 
-/*EXERCÍCIO 2*/
-SELECT *
-INTO sales.TexasCustomers
-FROM sales.customers
-WHERE state = 'TX'
+-----------------------Exercício 2: Apagar registos com transacções-----------------------
+--Utilize uma transacção para apagar os 2 novos registos inseridos na tabela production.categories e termine com ROLLBACK.
+--Faça um SELECT à tabela e veja os resultados.
 
-SELECT * FROM sales.TexasCustomers
+BEGIN TRANSACTION
+    DELETE FROM production.categories WHERE category_id = 8
+    DELETE FROM production.categories WHERE category_id = 9
+ROLLBACK TRANSACTION;
 
-/*------------------------------------------------------*/
+SELECT * FROM production.categories
 
-/*EXERCÍCIO 3*/
-DELETE FROM sales.TexasCustomers
-SELECT * FROM sales.TexasCustomers
+-----------------------Exercício 3: Controlo Transaccional-----------------------
 
-SET IDENTITY_INSERT sales.TexasCustomers ON;
-INSERT INTO sales.TexasCustomers (customer_id, first_name, last_name, phone, email, street, city, [state], zip_code)
-SELECT * FROM sales.customers
-WHERE state = 'TX'
+BEGIN TRY
+    BEGIN TRANSACTION
+        SET IDENTITY_INSERT production.categories ON
+        INSERT INTO production.categories(category_id, category_name) VALUES(8, 'Manchester United Bikes')
+        INSERT INTO production.categories(category_id, category_name) VALUES(9, 'Everton Bikes')
+        SET IDENTITY_INSERT production.categories OFF
 
-SELECT * FROM sales.TexasCustomers
+        SET IDENTITY_INSERT production.brands ON
+        INSERT INTO production.brands(brand_id, brand_name) VALUES(12, 'Fulham Bikes')
+        INSERT INTO production.brands(brand_id, brand_name) VALUES(12, 'Coventry Bikes')
+        SET IDENTITY_INSERT production.brands OFF
+    COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
+  ROLLBACK TRANSACTION
+END CATCH
 
-/*------------------------------------------------------*/
-
-/*EXERCÍCIO 4*/
-sp_helpindex "production.products"
-
-/*------------------------------------------------------*/
-
-/*EXERCÍCIO 5*/
-
-CREATE INDEX idx_lastname ON sales.customers(last_name);
-sp_helpindex "sales.customers"
-
-/*------------------------------------------------------*/
-
+SELECT * FROM production.categories;
+SELECT * FROM production.brands;
 
