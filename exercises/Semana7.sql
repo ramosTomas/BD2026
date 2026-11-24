@@ -50,8 +50,6 @@ GO
 SELECT * FROM listAllFunctions()
 
 -------------------------Exercício 4: Criar uma função-------------------------
---Crie uma função que lista todas as encomendas de um determinado ano (passado como parâmetro).
---Faça o código para chamar a função e verifique o resultado.
 
 GO
 CREATE FUNCTION listAllOrdersByYear(@year INT)
@@ -66,3 +64,29 @@ RETURN
 
 GO
 SELECT * FROM listAllOrdersByYear(2017)
+
+-------------------------Exercício 5: Criar uma função-------------------------
+--Crie uma função que lista todas as encomendas de uma determinada marca e de um determinado produto (marca e produto passados como parâmetros).
+--Faça o código para chamar a função e verifique o resultado.
+
+GO
+CREATE FUNCTION listAllOrdersByBrandAndProduct(@marca VARCHAR(100), @produto VARCHAR(100))
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT oi.order_id, b.brand_id, p.product_name
+    FROM production.products p
+    INNER JOIN production.brands b ON p.brand_id = b.brand_id
+    INNER JOIN sales.order_items oi ON p.product_id = oi.order_id
+    WHERE b.brand_name LIKE ('%' + @produto +'%')
+);
+
+GO
+SELECT * FROM production.products
+SELECT * FROM production.brands
+
+GO
+SELECT * FROM listAllOrdersByBrandAndProduct('Trek', '%Trek%')
+
+
